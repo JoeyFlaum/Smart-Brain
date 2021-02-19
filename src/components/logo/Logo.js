@@ -11,7 +11,7 @@ const Logo = () => {
         options={{ max: 40 }}
         style={{ height: 150,width: 150 }}
       >
-        <div className="Tilt-inner"> 👽 </div>
+        <div className="Tilt-inner"><img src="https://www.freeiconspng.com/uploads/brain-icon-4.png" alt="Download Vectors Brain Icon Free" /></div>
       </Tilt>
     </div>
 
