@@ -28,10 +28,27 @@ class App extends React.Component {
     super();
     this.state = {
       input: "",
-      imageUrl:""
+      imageUrl:"",
+      boundingBox:{}
     };
 
   }
+
+  calculateFaceLocation = (data) =>{
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    console.log(clarifaiFace)
+    let inputImage = document.getElementById("input-image");
+    const width = Number(inputImage.width);
+    const height = Number(inputImage.height);
+    console.log(width,height)
+    return{
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height-(clarifaiFace.bottom_row * height),
+    }
+  }
+
   onInputChange = (event) => {
     this.setState({input:event.target.value})
   };
@@ -44,7 +61,7 @@ class App extends React.Component {
         this.state.input
       )
       .then((response) => {
-        console.log(response?.outputs[0]?.data?.regions[0]?.region_info.bounding_box);
+        this.calculateFaceLocation(response);
       })
       .catch((err) => {
         console.log(err);
