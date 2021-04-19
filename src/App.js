@@ -34,26 +34,27 @@ class App extends React.Component {
       box: {},
       route: "signin",
       isSignedIn: false,
-      user : {
-        id: '',
-        name: '',
-        email: '',
+      user: {
+        id: "",
+        name: "",
+        email: "",
         entries: 0,
-        joined: '',
-      }
+        joined: "",
+      },
     };
   }
 
   loadUser = (data) => {
-    this.setState({user:{
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined,
-    }
-    })
-  }
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined,
+      },
+    });
+  };
 
   calculateFaceLocation = (data) => {
     const clarifaiFace =
@@ -83,11 +84,26 @@ class App extends React.Component {
         this.state.input
       )
       .then((response) => {
+        if (response) {
+          fetch("http://localhost:3000/image", {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: this.state.user.id,
+            })
+          })
+          .then(response => response.json())
+          .then(count =>{
+            console.log(count);
+            this.setState(Object.assign(this.state.user,{entries:count}))
+              },
+            )
+          .catch((err) => {
+            console.log(err);
+          });
+        }
         this.displayFaceBox(this.calculateFaceLocation(response));
       })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   onRouteChange = (route) => {
@@ -101,6 +117,7 @@ class App extends React.Component {
 
   render() {
     const { isSignedIn, route, imageUrl, box, user } = this.state;
+    console.log(user.entries, user.name);
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
@@ -111,7 +128,7 @@ class App extends React.Component {
         {route === "home" ? (
           <div>
             <Logo />
-            <Rank name = {user.name} entries = {user.entries}/>
+            <Rank name={user.name} entries={user.entries} key = {user.entries} />
             <ImageLinkForm
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
@@ -119,9 +136,12 @@ class App extends React.Component {
             <FaceRecognition box={box} imageUrl={imageUrl} />
           </div>
         ) : route === "signin" || route === "signout" ? (
-          <SignIn loadUser = {this.loadUser} onRouteChange={this.onRouteChange} />
+          <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
         ) : (
-          <Register onRouteChange={this.onRouteChange} loadUser = {this.loadUser} />
+          <Register
+            onRouteChange={this.onRouteChange}
+            loadUser={this.loadUser}
+          />
         )}
       </div>
     );
