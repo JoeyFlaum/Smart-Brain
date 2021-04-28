@@ -1,5 +1,4 @@
 import React from "react";
-import Clarifai from "clarifai";
 import Navigation from "./components/navigation/Navigation";
 import Logo from "./components/logo/Logo";
 import Rank from "./components/rank/Rank";
@@ -21,9 +20,6 @@ const particlesOptions = {
     },
   },
 };
-const app = new Clarifai.App({
-  apiKey: "57985cb41cb449de9ed182ecf9672d6a",
-});
 
 const initialState ={
   input: "",
@@ -68,8 +64,8 @@ class App extends React.Component {
       topRow: clarifaiFace.top_row * height,
       rightCol: width - clarifaiFace.right_col * width,
       bottomRow: height - clarifaiFace.bottom_row * height,
-    };
-  };
+    }};
+  
   displayFaceBox = (box) => {
     this.setState({ box: box });
   };
@@ -77,14 +73,20 @@ class App extends React.Component {
     this.setState({ input: event.target.value });
   };
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
-    app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL,
-        // THE JPG
-        this.state.input
-      )
+    this.setState({ imageUrl: this.state.input })
+    fetch("http://localhost:3000/imageURL", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input,
+      })
+    })
+      .then(response => response.json())
       .then((response) => {
+        if(response === "unable to work with API"){
+          return alert(response)
+        }
+        else{
         if (response) {
           fetch("http://localhost:3000/image", {
             method: "put",
@@ -102,7 +104,7 @@ class App extends React.Component {
           .catch(console.log);
         }
         this.displayFaceBox(this.calculateFaceLocation(response));
-      })
+      }})
   };
 
   onRouteChange = (route) => {

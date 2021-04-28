@@ -31,7 +31,7 @@ class Register extends React.Component {
     })
       .then((response) => response.json())
       .then((user) => {
-        if (user) {
+        if (user.id) {
           this.props.loadUser(user);
           this.props.onRouteChange("home");
         }
@@ -49,7 +49,7 @@ class Register extends React.Component {
                 <label className="db fw6 lh-copy f6" htmlFor="name">
                   Name
                 </label>
-                <input
+                <input 
                   onChange={this.onNameChange}
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="text"
