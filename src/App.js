@@ -74,7 +74,7 @@ class App extends React.Component {
   };
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-    fetch("http://localhost:3000/imageURL", {
+    fetch("https://shrouded-crag-14757.herokuapp.com/imageURL", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -88,7 +88,7 @@ class App extends React.Component {
         }
         else{
         if (response) {
-          fetch("http://localhost:3000/image", {
+          fetch("https://shrouded-crag-14757.herokuapp.com/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

@@ -7,5 +7,7 @@
 			"path": "..\\smart_brain_api"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
 }
